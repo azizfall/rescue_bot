@@ -2,7 +2,8 @@ import RPi.GPIO as GPIO
 import time
 import json 
 GPIO.setmode(GPIO.BCM)
-from flask import Flask, request, jsonify
+from flask import Flask, request
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -25,8 +26,8 @@ def homepage():
 def setup_camera():
 	if request.method == 'POST': 
 		pwm.start(4.5)
-		return jsonify({"status":"Success"})
-	else return jsonify({"status":"Failure"})
+		return jsonify({"Status":"Success"})
+	else: return jsonify({"Status":"Failure"})
 @app.route('/api/v1/camera', methods=['GET','POST']) 
 def camera_control(): 
 	if request.method == 'POST': 
@@ -36,13 +37,13 @@ def camera_control():
 			current_angle = current_angle - 5
 			duty_cycle = duty_cycle(current_angle)
 			pwm.ChangeDutyCycle(duty_cycle)
-			return jsonify({"status":"success"})
+			return jsonify({"Status":"success"})
 		elif key == 'right' and current_angle != 180:
 			current_angle = current_angle + 5
 			duty_cycle = duty_cycle(current_angle)
 			pwm.ChangeDutyCycle(duty_cycle)
-			return  jsonify({"status":"success"})
-		else return jsonify({"status":"Failure"})
+			return  jsonify({"Status":"success"})
+		else: return jsonify({"Status":"Failure"})
 
 if __name__ == "__main__": 
         app.run()

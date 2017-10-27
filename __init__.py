@@ -34,7 +34,7 @@ def camera_control():
 			current_angle = current_angle - 5
 			duty_cycle = duty_cycle(current_angle)
 			pwm.ChangeDutyCycle(duty_cycle)
-		elif key == 'right' and current_angle != 180
+		elif key == 'right' and current_angle != 180:
 			current_angle = current_angle + 5
 			duty_cycle = duty_cycle(current_angle)
 			pwm.ChangeDutyCycle(duty_cycle)

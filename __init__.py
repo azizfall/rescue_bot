@@ -25,6 +25,8 @@ def homepage():
 def setup_camera():
 	if request.method == 'POST': 
 		pwm.start(4.5)
+		return jsonify({"status":"Success"})
+	else return jsonify({"status":"Failure"})
 @app.route('/api/v1/camera', methods=['GET','POST']) 
 def camera_control(): 
 	if request.method == 'POST': 
@@ -34,10 +36,13 @@ def camera_control():
 			current_angle = current_angle - 5
 			duty_cycle = duty_cycle(current_angle)
 			pwm.ChangeDutyCycle(duty_cycle)
+			return jsonify({"status":"success"})
 		elif key == 'right' and current_angle != 180:
 			current_angle = current_angle + 5
 			duty_cycle = duty_cycle(current_angle)
 			pwm.ChangeDutyCycle(duty_cycle)
+			return  jsonify({"status":"success"})
+		else return jsonify({"status":"Failure"})
 
 if __name__ == "__main__": 
         app.run()

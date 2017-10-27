@@ -21,7 +21,7 @@ def homepage():
         return "HI MAN HERRO" 
 
 
-@app.route('/app/v1/setup/camera') 
+@app.route('/api/v1/setup/camera') 
 def setup_camera():
 	if request.method == 'POST': 
 		pwm.start(4.5)

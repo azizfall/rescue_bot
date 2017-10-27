@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import json 
 GPIO.setmode(GPIO.BCM)
-from flask import Flask, request 
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 

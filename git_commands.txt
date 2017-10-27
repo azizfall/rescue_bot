@@ -1,0 +1,19 @@
+# Create a repository
+
+Create one on github.com
+Navigate to your project folder
+type: git init
+copy the command that says git add remote orgin from github
+type: git add --all
+(if the machine git info isn't set)
+copy and paste the command: git config --global user.email "YOUR EMAIL"
+do the same for user.name
+type: git commit -m "Message" -> to commit the changes
+type git push -u origin master
+
+
+# After your repository is already made
+
+type git add <name of file> or git add --all
+type git commit -m "Message"
+type git push

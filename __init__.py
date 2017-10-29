@@ -1,15 +1,16 @@
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import time
 import json 
-GPIO.setmode(GPIO.BCM)
+#GPIO.setmode(GPIO.BCM)
 from flask import Flask, request
 from flask import jsonify
+import os
 
 app = Flask(__name__)
 
-servo_pin = 25
-GPIO.setup(servo_pin,GPIO.OUT)
-pwm = GPIO.PWM(servo_pin,50)
+#servo_pin = 25
+#GPIO.setup(servo_pin,GPIO.OUT)
+#pwm = GPIO.PWM(servo_pin,50)
 current_angle = 0
 
 def duty_cycle(angle):
@@ -24,26 +25,24 @@ def homepage():
 
 @app.route('/api/v1/setup/camera') 
 def setup_camera():
-	if request.method == 'POST': 
-		pwm.start(4.5)
+	if request.method == 'POST':
 		return jsonify({"Status":"Success"})
 	else: return jsonify({"Status":"Failure"})
 @app.route('/api/v1/camera', methods=['GET','POST']) 
-def camera_control(): 
-	if request.method == 'POST': 
+def camera_control():
+	if request.method == 'POST':
 		servo_req = request.json
 		key = servo_req['key']
-		if key == 'left' and current_angle != 0:
-			current_angle = current_angle - 5
-			duty_cycle = duty_cycle(current_angle)
-			pwm.ChangeDutyCycle(duty_cycle)
+		dev = os.open("/dev/memory",os.O_RDWR)
+		if key == 'left':
+			data = "L"
+			os.write(dev,data)
 			return jsonify({"Status":"success"})
-		elif key == 'right' and current_angle != 180:
-			current_angle = current_angle + 5
-			duty_cycle = duty_cycle(current_angle)
-			pwm.ChangeDutyCycle(duty_cycle)
+		elif key == 'right':
+			data = "R"
+			os.write(dev,data)
 			return  jsonify({"Status":"success"})
-		else: return jsonify({"Status":"Failure"})
+	return jsonify({"Status":"Failure"})
 
 if __name__ == "__main__": 
         app.run()

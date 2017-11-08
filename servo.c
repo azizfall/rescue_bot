@@ -125,11 +125,11 @@ int main(int argc, char **argv)
 	
 	//check whether pwm signal set successfully
 	if (write(fd, buf, 1) != 1) {
-		printf("Bullshit");
+		printf("nonsense");
 		exit(1);
 	}
 	if (read(fd, buf, 1) != 1) {
-		printf("Crap");
+		printf("nonsense");
 		exit(1);
 	}
 	printf("pwm_freq: %u\n", buf[0]);
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 	buf[1] = 0x81;
 	
 	if ((write(fd, buf, 2)) != 2) {
-		printf("Bullshit");
+		printf("nonsense");
 		exit(1);
 	}
 

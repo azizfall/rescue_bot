@@ -48,9 +48,9 @@ void reset(int fd) {
 int main(int argc, char **argv)
 {
 	
-
-	float duty_cycle = 0.035;   // can vary this quantity 
-	
+	int angle;
+	sscanf(argv[1],"%d",&angle);
+	float duty_cycle = (0.033333333*angle + 4.5)/100;   // can vary  this 
 	int fd;														// File descrition
 	// For older raspberry pi modules use "/dev/i2c-0" instead of "/dev/i2c-1" for the i2c port
 	char *fileName = "/dev/i2c-1";								// Name of the port we will be using
@@ -67,9 +67,6 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	//reset(fd);
-	
-	//usleep(100000);
 
 	buf[0] = 0; //read from mode register		
 	
@@ -83,35 +80,9 @@ int main(int argc, char **argv)
 		printf("Unable to read from slave\n");
 		exit(1);
 	}
-	printf("Buffer value: %u\n", buf[0]);
 
 	usleep(100000);
-/*
-	unsigned char modeReg = (buf[0] & 0x7F) | 0x10;
-	buf[1] = modeReg;
-	buf[0] = 0;
-	if (write(fd, buf, 2) != 2){
-		printf("Error writing to i2c slave\n");
-		exit(1);
-	}
-	
-	//testing mode register
-	buf[0] = 0;
-	if (write(fd, buf, 1) != 1) {
-		printf("Bullshit\n");
-		exit(1);
-	}
-	
-	if (read(fd, buf, 1) != 1) {
-		printf("Crap\n");
-		exit(1);
-	}
 
-	printf("Buffer value after setup: %u\n", buf[0]);
-*/
-
-        // set the pwm frequency
-        // device is initially in sleep mode
         char pwm_freq = 0x79;
         char freq_address = 0xFE;
         buf[0] = freq_address;
@@ -132,7 +103,6 @@ int main(int argc, char **argv)
 		printf("nonsense");
 		exit(1);
 	}
-	printf("pwm_freq: %u\n", buf[0]);
 
         //turn the device on set the sleep to 0 in mode register 1
 	buf[0] = 0;
@@ -145,12 +115,11 @@ int main(int argc, char **argv)
 
         usleep(100000);
 
-	while (1) {
-		set_pwm(fd,duty_cycle,0x8,0x9);
-		usleep(1000000);
-		set_pwm(fd,0.075,0x8,0x9);
-		usleep(1000000);
-	}
+	
+	set_pwm(fd,duty_cycle,0x8,0x9);
+	usleep(1000000);
+	//set_pwm(fd,0.075,0x8,0x9);
+	//usleep(1000000);
 	//set_pwm(fd,duty_cycle,0xC,0xD);
 	//set_pwm(fd,duty_cycle,0x10,0x11);
 

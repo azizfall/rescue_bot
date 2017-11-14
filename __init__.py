@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 #current_angle = 0
 
-
 @app.route('/')
 def homepage():
         return "HI MAN HERRO" 
@@ -30,9 +29,9 @@ def gps():
 	if request.method == 'POST':
 		cmd=['/var/www/FlaskApp/FlaskApp/gps']
 		#cmd=['ls','-l']
-		p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
-		out , err = p.communicate()
-		return jsonify({"GPS_DATA":str(out)})
+		#p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+		#out , err = p.communicate()
+		return jsonify({"GPS_DATA":"42.2712 83.75"})
 	return jsonify({"Status":"Failure"})
 
 

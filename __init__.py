@@ -6,6 +6,8 @@ from flask import jsonify
 import os
 import subprocess 
 
+from dbconnect import connect 
+
 app = Flask(__name__)
 
 #current_angle = 0
@@ -14,6 +16,17 @@ app = Flask(__name__)
 @app.route('/')
 def homepage():
         return "HI MAN HERRO" 
+
+
+@app.route('/api/v1/robot/available',methods=['GET','POST'])
+def available():
+	cursor,conn = connect()
+	cursor.execute("SELECT available from Robot")
+	is_available = cursor.fetchone()
+	conn.commit()
+	cursor.close()
+	conn.close()
+	return jsonify({"available":is_available}) 
 
 
 @app.route('/api/v1/setup/camera', methods=['GET','POST']) 

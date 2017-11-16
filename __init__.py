@@ -124,6 +124,10 @@ def motor_control():
 			data = "B"
 			os.write(dev,data)
 			return  jsonify({"Status":"success"})
+		elif key == 'stop':
+			data = "S"
+			os.write(dev,data)
+			return jsonify({"Status":"success"})
 	return jsonify({"Status":"Failure"})
 
 if __name__ == "__main__": 

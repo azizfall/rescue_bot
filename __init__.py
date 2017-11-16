@@ -20,13 +20,35 @@ def homepage():
 
 @app.route('/api/v1/robot/available',methods=['GET','POST'])
 def available():
-	cursor,conn = connect()
-	cursor.execute("SELECT available from Robot")
-	is_available = cursor.fetchone()
-	conn.commit()
-	cursor.close()
-	conn.close()
-	return jsonify({"available":is_available}) 
+	if request.method == 'POST':
+		cursor,conn = connect()
+		cursor.execute("SELECT available from Robot")
+		is_available = cursor.fetchone()
+		conn.commit()
+		cursor.close()
+		conn.close()
+		return jsonify({"available":is_available}) 
+
+@app.route('/api/v1/robot/dissable',methods=['GET','POST'])
+def dissbale():
+	if request.method == 'POST':
+		cursor,conn = connect()
+		cursor.execute("UPDATE Robot SET available=0")
+		conn.commit()
+		cursor.close()
+		conn.close()
+		return jsonify({"Status":"Success"})
+
+
+@app.route('/api/v1/robot/enable',methods=['GET','POST'])
+def enable():
+	if request.method == 'POST':
+		cursor,conn = connect()
+		cursor.execute("UPDATE Robot SET available=1")
+		conn.commit()
+		cursor.close()
+		conn.close()
+		return jsonify({"Status":"Success"})
 
 
 @app.route('/api/v1/setup/camera', methods=['GET','POST']) 

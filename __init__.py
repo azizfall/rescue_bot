@@ -30,7 +30,7 @@ def available():
 		return jsonify({"available":is_available}) 
 
 @app.route('/api/v1/robot/dissable',methods=['GET','POST'])
-def dissbale():
+def dissable():
 	if request.method == 'POST':
 		cursor,conn = connect()
 		cursor.execute("UPDATE Robot SET available=0")

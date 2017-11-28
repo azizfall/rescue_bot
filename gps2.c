@@ -67,28 +67,29 @@ int main() {
 		}
 		
 		if(isType) {
-			printf("***** Location *****\n");
-			printf("Time: ");
+			//printf("***** Location *****\n");
+			//printf("Time: ");
 			read(fd, serialBuffer, 1);
 			//printf("test data: %c\n", serialBuffer[0]); //ignored data
 			read(fd, serialBuffer, 1);
 			while(serialBuffer[0] != ',') {
-				printf("%c",serialBuffer[0]);
+				//printf("%c",serialBuffer[0]);
 				read(fd, serialBuffer, 1);
 			}
-			printf("\n");
+			//printf("\n");
 
-			printf("Latitude: ");
+			//printf("Latitude: ");
 			read(fd, serialBuffer, 1);
 			while(serialBuffer[0] != ',') {
 				printf("%c",serialBuffer[0]);
 				read(fd, serialBuffer, 1);
 			}
 			read(fd, serialBuffer, 1); //read N or S
-			printf(" degrees %c\n",serialBuffer[0]); //print N or S
+			//printf(" degrees %c\n",serialBuffer[0]); //print N or S
 
-			printf("Longitude: ");
-			
+			printf(" ");
+
+			//printf("Longitude: ");
 			read(fd,serialBuffer, 1);
 			//printf("test data2: %c\n", serialBuffer[0]); //ignored data
 			read(fd, serialBuffer, 1);
@@ -97,7 +98,7 @@ int main() {
 				read(fd, serialBuffer, 1);
 			}
 			read(fd, serialBuffer, 1); //read E or W
-			printf(" degrees %c\n\n",serialBuffer[0]); //print E or W
+			//printf(" degrees %c\n\n",serialBuffer[0]); //print E or W
 		}//if isType GPGGA --> look at data
 		
 	}//if looking for next data category

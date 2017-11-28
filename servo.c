@@ -48,9 +48,18 @@ void reset(int fd) {
 int main(int argc, char **argv)
 {
 	
-	int angle;
-	sscanf(argv[1],"%d",&angle); 
-	float duty_cycle = (0.0333333333*angle + 4.5)/100;   // can vary this quantity 
+	int motorNumber, angle;
+	sscanf(argv[1],"%d",&motorNumber); 
+	sscanf(argv[2],"%d",&angle); 
+	
+	float duty_cycle = 0;
+	if (motorNumber == 0 || motorNumber == 4) {
+		duty_cycle = angle/180.0;   // can vary this quantity 
+	}
+	else if (motorNumber == 1 || motorNumber == 2 || motorNumber == 3) {
+		duty_cycle = (0.055555555*angle + 2.5)/100;   // can vary this quantity 
+	}
+	//printf("duty cycle is %f\n", duty_cycle);
 	
 	int fd;														// File descrition
 	// For older raspberry pi modules use "/dev/i2c-0" instead of "/dev/i2c-1" for the i2c port
@@ -87,13 +96,15 @@ int main(int argc, char **argv)
 
 	usleep(100000);
 	
-        char pwm_freq = 0x79;
+
+        int pwm_freq = 0x79;
         char freq_address = 0xFE;
         buf[0] = freq_address;
+	//printf("write %i to pwm_freq\n", pwm_freq); 
         buf[1] = pwm_freq;
 
 
-        if ((write(fd, buf, 2)) != 2) { // setting the frequency to 50Hz
+        if ((write(fd, buf, 2)) != 2) { // setting the frequency to 50Hz or 500Hz
                 printf("Error writing to i2c slave\n");
                 exit(1);
         }
@@ -119,12 +130,21 @@ int main(int argc, char **argv)
 
         usleep(100000);
 
-	set_pwm(fd,duty_cycle,0x8,0x9);
-	usleep(1000000);
-	//set_pwm(fd,0.075,0x8,0x9);
-	//usleep(1000000);
-	//set_pwm(fd,duty_cycle,0xC,0xD);
-	//set_pwm(fd,duty_cycle,0x10,0x11);
+	if(motorNumber == 0) {
+		set_pwm(fd,duty_cycle,0x8,0x9);//pwm0
+	}
+	else if(motorNumber == 1) {
+		set_pwm(fd,duty_cycle,0xC,0xD);//pwm1
+	}
+	else if(motorNumber == 2) {
+		set_pwm(fd,duty_cycle,0x10,0x11);//pwm2
+	}
+	else if(motorNumber == 3) {
+		set_pwm(fd,duty_cycle,0x14,0x15);//pwm3
+	}
+	else if(motorNumber == 4) {
+		set_pwm(fd,duty_cycle,0x18,0x19);//pwm4
+	}
 
 
 	

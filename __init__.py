@@ -104,7 +104,7 @@ def speed_control():
         try:
                 if request.method == 'POST':
                         speed_req = request.json
-                        speed = servo_req['speed']
+                        speed = speed_req['speed']
                         cmd = ['/var/www/FlaskApp/FlaskApp/serv','0',str(speed)]
                         p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
                         out , err = p.communicate()

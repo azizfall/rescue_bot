@@ -6,6 +6,8 @@ from flask import jsonify
 import os
 import subprocess 
 
+from dbconnect import connect 
+
 app = Flask(__name__)
 
 #current_angle = 0
@@ -16,12 +18,48 @@ def homepage():
         return "HI MAN HERRO" 
 
 
+@app.route('/api/v1/robot/available',methods=['GET','POST'])
+def available():
+	if request.method == 'POST':
+		cursor,conn = connect()
+		cursor.execute("SELECT available from Robot")
+		is_available = cursor.fetchone()
+		conn.commit()
+		cursor.close()
+		conn.close()
+		return jsonify({"available":is_available[0]}) 
+
+@app.route('/api/v1/robot/dissable',methods=['GET','POST'])
+def dissable():
+	if request.method == 'POST':
+		cursor,conn = connect()
+		cursor.execute("UPDATE Robot SET available=0")
+		conn.commit()
+		cursor.close()
+		conn.close()
+		return jsonify({"Status":"Success"})
+
+
+@app.route('/api/v1/robot/enable',methods=['GET','POST'])
+def enable():
+	if request.method == 'POST':
+		cursor,conn = connect()
+		cursor.execute("UPDATE Robot SET available=1")
+		conn.commit()
+		cursor.close()
+		conn.close()
+		return jsonify({"Status":"Success"})
+
+
 @app.route('/api/v1/setup/camera', methods=['GET','POST']) 
 def setup_camera():
 	if request.method == 'POST':
-		cmd=['/var/www/FlaskApp/FlaskApp/serv','0']
+		cmd=['/var/www/FlaskApp/FlaskApp/serv','1','0']
 		p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
 		out , err = p.communicate()
+		cmd=['/var/www/FlaskApp/FlaskApp/serv','2','0']
+                p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+                out , err = p.communicate()
 		return jsonify({"Status":"Success"})
 	else: return jsonify({"Status":"Failure"})
 
@@ -29,43 +67,54 @@ def setup_camera():
 def gps():
 	if request.method == 'POST':
 		cmd=['/var/www/FlaskApp/FlaskApp/gps']
-		#cmd=['ls','-l']
 		p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
 		out , err = p.communicate()
 		return jsonify({"GPS_DATA":str(out)})
 	return jsonify({"Status":"Failure"})
 
 
-@app.route('/api/v1/camera',methods=['GET','POST'])
-def camera_control():
+@app.route('/api/v1/camera/1',methods=['GET','POST'])
+def camera_control_1():
 	try:
-		#global current_angle
 		if request.method == 'POST':
 			servo_req = request.json
 			key = servo_req['key']
-			if 1:
-				if 1:
-					#current_angle = current_angle - 30
-					#return current_angle
-					cmd = ['/var/www/FlaskApp/FlaskApp/serv',str(key)]
-					p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
-					out , err = p.communicate()
-					#return jsonify({"Status":"Success"})
-					return jsonify({"angle":key})
-			#elif key == 'right':
-			#	if current_angle != 180:
-			#		current_angle = current_angle + 30
-			#		#return current_angle
-			#		cmd = ['/var/www/FlaskApp/FlaskApp/serv',str(current_angle)]
-			#		p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
-			#		out , err = p.communicate()
-			#		#return jsonify({"Status":"Success"})
-			#		return jsonify({"angle":current_angle})
-			#return jsonify({"Status":"Failure"})
-			#return subprocess.call(['ls','-l'],shell=True)
+			cmd = ['/var/www/FlaskApp/FlaskApp/serv','1',str(key)]
+			p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+			out , err = p.communicate()
 			return jsonify({"angle":key})
 	except Exception as e:
 		return str(e)
+
+@app.route('/api/v1/camera/2',methods=['GET','POST'])
+def camera_control_2():
+        try:
+                if request.method == 'POST':
+                        servo_req = request.json
+                        key = servo_req['key']
+                        cmd = ['/var/www/FlaskApp/FlaskApp/serv','2',str(key)]
+                        p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+                        out , err = p.communicate()
+                        return jsonify({"angle":key})
+        except Exception as e:
+                return str(e)
+
+@app.route('/api/v1/motors/speed',methods=['GET','POST'])
+def speed_control():
+        try:
+                if request.method == 'POST':
+                        speed_req = request.json
+                        speed = speed_req['speed']
+                        cmd = ['/var/www/FlaskApp/FlaskApp/serv','0',str(speed)]
+                        p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+                        out , err = p.communicate()
+			cmd = ['/var/www/FlaskApp/FlaskApp/serv','4',str(speed)]
+                        p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+                        out , err = p.communicate()
+                        return jsonify({"speed":speed})
+        except Exception as e:
+                return str(e)
+
 
 @app.route('/api/v1/motors', methods=['GET','POST']) 
 def motor_control():
@@ -89,6 +138,10 @@ def motor_control():
 			data = "B"
 			os.write(dev,data)
 			return  jsonify({"Status":"success"})
+		elif key == 'stop':
+			data = "S"
+			os.write(dev,data)
+			return jsonify({"Status":"success"})
 	return jsonify({"Status":"Failure"})
 
 if __name__ == "__main__": 

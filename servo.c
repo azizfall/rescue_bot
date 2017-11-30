@@ -56,7 +56,12 @@ int main(int argc, char **argv)
 	if (motorNumber == 0 || motorNumber == 4) {
 		duty_cycle = angle/180.0;   // can vary this quantity 
 	}
-	else if (motorNumber == 1 || motorNumber == 2 || motorNumber == 3) {
+	else if (motorNumber == 1 || motorNumber == 3) {
+		duty_cycle = (0.055555555*angle + 2.5)/100;   // can vary this quantity 
+	}
+	else if (motorNumber == 2) {
+		if (angle < 50) angle = 50;
+		else if (angle > 120) angle = 120;
 		duty_cycle = (0.055555555*angle + 2.5)/100;   // can vary this quantity 
 	}
 	//printf("duty cycle is %f\n", duty_cycle);

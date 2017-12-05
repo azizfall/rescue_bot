@@ -12,7 +12,6 @@ app = Flask(__name__)
 
 #current_angle = 0
 
-
 @app.route('/')
 def homepage():
         return "HI MAN HERRO" 
@@ -72,6 +71,14 @@ def gps():
 		return jsonify({"GPS_DATA":str(out)})
 	return jsonify({"Status":"Failure"})
 
+@app.route('/api/v1/gasSensor',methods=['GET','POST'])
+def gasSensor():
+	if request.method == 'POST':
+		cmd=['/var/www/FlaskApp/FlaskApp/sensor']
+		p = subprocess.Popen(cmd,stdout = subprocess.PIPE,stderr = subprocess.PIPE, stdin = subprocess.PIPE)
+		out , err = p.communicate()
+		return jsonify({"GAS_LEVEL":str(out)})
+	return jsonify({"Status":"Failure"})
 
 @app.route('/api/v1/camera/1',methods=['GET','POST'])
 def camera_control_1():
